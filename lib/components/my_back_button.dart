@@ -13,7 +13,7 @@ class MyBackButton extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Theme.of(context).colorScheme.primary),
+                  color: Theme.of(context).colorScheme.secondary),
               padding: EdgeInsets.all(15),
               child: Icon(Icons.arrow_back),
             ),
