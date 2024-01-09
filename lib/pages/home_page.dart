@@ -10,8 +10,11 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Home Page'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text(
+          'Home Page',
+          style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+        ),
         centerTitle: true,
       ),
       drawer: MyDrawer(),
