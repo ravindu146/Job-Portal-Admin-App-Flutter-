@@ -11,6 +11,7 @@ import 'package:job_portal_admin_app/theme/light_mode.dart';
 
 import 'auth/auth.dart';
 import 'pages/login_page.dart';
+import 'pages/new_company_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +35,8 @@ class MyApp extends StatelessWidget {
         '/login_register_page': (context) => LoginOrRegister(),
         '/home_page': (context) => HomePage(),
         '/profile_page': (context) => ProfilePage(),
-        '/companies_page': (context) => CompaniesPage()
+        '/companies_page': (context) => CompaniesPage(),
+        '/add_new_company': (context) => NewCompanyPage(),
       },
     );
   }
