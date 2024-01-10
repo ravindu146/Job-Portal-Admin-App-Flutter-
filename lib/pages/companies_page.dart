@@ -80,6 +80,14 @@ class CompaniesPage extends StatelessWidget {
                       return ListTile(
                         title: Text("${name} - ${address}"),
                         subtitle: Text(addedBy),
+                        onTap: () {
+                          Navigator.pushNamed(context, '/company_page',
+                              arguments: {
+                                'companyName': name,
+                                'companyAddress': address,
+                                'addedBy': addedBy
+                              });
+                        },
                       );
                     });
               },

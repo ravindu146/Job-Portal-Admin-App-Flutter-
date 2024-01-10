@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:job_portal_admin_app/auth/login_or_register.dart';
 import 'package:job_portal_admin_app/firebase_options.dart';
 import 'package:job_portal_admin_app/pages/companies_page.dart';
+import 'package:job_portal_admin_app/pages/company_page.dart';
 import 'package:job_portal_admin_app/pages/home_page.dart';
 import 'package:job_portal_admin_app/pages/profile_page.dart';
 import 'package:job_portal_admin_app/pages/register_page.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/profile_page': (context) => ProfilePage(),
         '/companies_page': (context) => CompaniesPage(),
         '/add_new_company': (context) => NewCompanyPage(),
+        '/company_page': (context) => CompanyPage(),
       },
     );
   }
