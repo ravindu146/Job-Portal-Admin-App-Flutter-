@@ -11,7 +11,8 @@ class CompanyPage extends StatelessWidget {
     // Extracting information
     final String companyName = args!['companyName'];
     final String companyAddress = args!['companyAddress'];
-    final String addedBy = args!['addedBy'];
+    final String addedByUsername = args!['addedByUsername'];
+    final String addedByRole = args!['addedByRole'];
 
     return Scaffold(
       appBar: AppBar(
@@ -50,7 +51,7 @@ class CompanyPage extends StatelessWidget {
               height: 10,
             ),
             Text('Address: $companyAddress'),
-            Text('Added By: $addedBy'),
+            Text("Added By: ${addedByUsername} (${addedByRole})"),
           ],
         ),
       ),

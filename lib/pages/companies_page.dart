@@ -75,17 +75,22 @@ class CompaniesPage extends StatelessWidget {
                       final String name = company['name'];
                       final String address = company['address'];
                       final String addedBy = company['added_by'];
+                      final String addedByUsername =
+                          company['added_by_username'];
+                      final String addedByRole = company['added_by_role'];
 
                       // Return as a list tile
                       return ListTile(
                         title: Text("${name} - ${address}"),
-                        subtitle: Text(addedBy),
+                        subtitle: Text(
+                            "Added by : ${addedByUsername} (${addedByRole})"),
                         onTap: () {
                           Navigator.pushNamed(context, '/company_page',
                               arguments: {
                                 'companyName': name,
                                 'companyAddress': address,
-                                'addedBy': addedBy
+                                'addedByUsername': addedByUsername,
+                                'addedByRole': addedByRole
                               });
                         },
                       );

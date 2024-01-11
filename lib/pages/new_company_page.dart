@@ -35,11 +35,26 @@ class _NewCompanyPageState extends State<NewCompanyPage> {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-        await FirebaseFirestore.instance.collection('companies').add({
-          'name': companyNameController.text,
-          'address': companyAddressController.text,
-          'added_by': user!.uid
-        });
+        // Fetch user data from Firestore
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+            .collection(
+                'topLevelUsers') // Replace with your actual collection name
+            .doc(user.uid)
+            .get();
+
+        if (userSnapshot.exists) {
+          // Get the username from the user data
+          String username = userSnapshot['username'];
+          String role = userSnapshot['role'];
+
+          await FirebaseFirestore.instance.collection('companies').add({
+            'name': companyNameController.text,
+            'address': companyAddressController.text,
+            'added_by': user!.uid,
+            'added_by_username': username,
+            'added_by_role': role
+          });
+        }
 
         Navigator.pop(context);
       } else {
