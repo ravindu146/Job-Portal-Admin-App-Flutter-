@@ -11,25 +11,16 @@ class CompanyPage extends StatefulWidget {
 }
 
 class _CompanyPageState extends State<CompanyPage> {
-  Future<List<Map<String, dynamic>>> getManagersForCompany(
-      String companyId) async {
-    List<Map<String, dynamic>> managersList = [];
-
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('topLevelUsers')
-          .where('companyId', isEqualTo: companyId)
-          .where('role', isEqualTo: 'manager')
-          .get();
-
-      managersList = querySnapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
-    } on FirebaseException catch (e) {
-      print(e.code);
-    }
-
-    return managersList;
+  Stream<List<Map<String, dynamic>>> getManagersForCompanyStream(
+      String companyId) {
+    return FirebaseFirestore.instance
+        .collection('topLevelUsers')
+        .where('companyId', isEqualTo: companyId)
+        .where('role', isEqualTo: 'manager')
+        .snapshots()
+        .map((querySnapshot) => querySnapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList());
   }
 
   @override
@@ -47,8 +38,6 @@ class _CompanyPageState extends State<CompanyPage> {
     void redirectToNewPage(BuildContext context) {
       Navigator.pushNamed(context, '/add_new_manager',
           arguments: {'companyName': companyName, 'companyId': companyId});
-
-      setState(() {});
     }
 
     return Scaffold(
@@ -63,7 +52,7 @@ class _CompanyPageState extends State<CompanyPage> {
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min, // Set this to MainAxisSize.min
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             verticalDirection: VerticalDirection.down,
             children: [
@@ -95,8 +84,8 @@ class _CompanyPageState extends State<CompanyPage> {
               ),
               Divider(
                 color: Theme.of(context).colorScheme.secondary,
-                height: 20, // You can adjust the height as needed
-                thickness: 1, // You can adjust the thickness as needed
+                height: 20,
+                thickness: 1,
               ),
               MyAddButon(
                 onTap: () {
@@ -107,9 +96,9 @@ class _CompanyPageState extends State<CompanyPage> {
 
               SizedBox(height: 20),
 
-              // Future builder to display managers
-              FutureBuilder(
-                future: getManagersForCompany(companyId),
+              // Stream builder to display managers
+              StreamBuilder(
+                stream: getManagersForCompanyStream(companyId),
                 builder: (context,
                     AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                   // Show loading circle
@@ -149,8 +138,8 @@ class _CompanyPageState extends State<CompanyPage> {
 
               Divider(
                 color: Theme.of(context).colorScheme.secondary,
-                height: 20, // You can adjust the height as needed
-                thickness: 1, // You can adjust the thickness as needed
+                height: 20,
+                thickness: 1,
               ),
               MyAddButon(
                 onTap: () {
