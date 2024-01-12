@@ -14,4 +14,15 @@ class FirestoreDatabase {
 
     return companiesStream;
   }
+
+  // Getting list of Managers for a particular company
+  Stream<QuerySnapshot> getManagersForCompany(String companyId) {
+    final managersForCompanyStream = FirebaseFirestore.instance
+        .collection('topLevelUsers')
+        .where('companyId', isEqualTo: companyId)
+        .where('role', isEqualTo: 'manager')
+        .snapshots();
+
+    return managersForCompanyStream;
+  }
 }

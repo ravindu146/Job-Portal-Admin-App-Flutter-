@@ -5,6 +5,7 @@ import 'package:job_portal_admin_app/firebase_options.dart';
 import 'package:job_portal_admin_app/pages/companies_page.dart';
 import 'package:job_portal_admin_app/pages/company_page.dart';
 import 'package:job_portal_admin_app/pages/home_page.dart';
+import 'package:job_portal_admin_app/pages/new_manager_page.dart';
 import 'package:job_portal_admin_app/pages/profile_page.dart';
 import 'package:job_portal_admin_app/pages/register_page.dart';
 import 'package:job_portal_admin_app/theme/dark_mode.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         '/companies_page': (context) => CompaniesPage(),
         '/add_new_company': (context) => NewCompanyPage(),
         '/company_page': (context) => CompanyPage(),
+        '/add_new_manager': (context) => NewManagerPage(),
       },
     );
   }

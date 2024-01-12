@@ -79,6 +79,9 @@ class CompaniesPage extends StatelessWidget {
                           company['added_by_username'];
                       final String addedByRole = company['added_by_role'];
 
+                      // Get company document ID
+                      final String companyId = snapshot.data!.docs[index].id;
+
                       // Return as a list tile
                       return ListTile(
                         title: Text("${name} - ${address}"),
@@ -87,10 +90,11 @@ class CompaniesPage extends StatelessWidget {
                         onTap: () {
                           Navigator.pushNamed(context, '/company_page',
                               arguments: {
+                                'companyId': companyId,
                                 'companyName': name,
                                 'companyAddress': address,
                                 'addedByUsername': addedByUsername,
-                                'addedByRole': addedByRole
+                                'addedByRole': addedByRole,
                               });
                         },
                       );
