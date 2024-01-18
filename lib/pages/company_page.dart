@@ -171,8 +171,6 @@ class _CompanyPageState extends State<CompanyPage> {
                 text: 'Add New Job Vacancy',
               ),
 
-              SizedBox(height: 20),
-
               // Stream builder to display managers
               StreamBuilder(
                 stream: getJobVacanciesForCompanyStream(companyId),
