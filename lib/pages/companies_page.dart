@@ -95,6 +95,7 @@ class CompaniesPage extends StatelessWidget {
                                 'companyAddress': address,
                                 'addedByUsername': addedByUsername,
                                 'addedByRole': addedByRole,
+                                'addedBy': addedBy
                               });
                         },
                       );
