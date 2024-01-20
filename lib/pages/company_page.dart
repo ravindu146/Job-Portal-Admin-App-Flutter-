@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:job_portal_admin_app/components/my_add_button.dart';
+import 'package:job_portal_admin_app/components/my_list_tile.dart';
+import 'package:job_portal_admin_app/components/my_list_tile_with_action.dart';
 import 'package:job_portal_admin_app/helper/helper_functions.dart';
 
 class CompanyPage extends StatefulWidget {
@@ -30,12 +32,12 @@ class _CompanyPageState extends State<CompanyPage> {
         .where('company_id', isEqualTo: companyId)
         .orderBy('timestamp', descending: true)
         .snapshots()
-        .map((querySnapshot) => querySnapshot.docs
-            .map((doc) => {
-                  ...doc.data() as Map<String, dynamic>,
-                  'timestamp': doc['timestamp']?.millisecondsSinceEpoch,
-                })
-            .toList());
+        .map((querySnapshot) => querySnapshot.docs.map((doc) {
+              Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+              data['documentId'] = doc.id; // Add documentId to the map
+              data['timestamp'] = doc['timestamp']?.millisecondsSinceEpoch;
+              return data;
+            }).toList());
   }
 
   @override
@@ -143,10 +145,10 @@ class _CompanyPageState extends State<CompanyPage> {
                     itemBuilder: (context, index) {
                       final manager = managers[index];
                       final String managerUsername = manager['username'];
+                      final String managerEmail = manager['email'];
 
-                      return ListTile(
-                        title: Text('Manager: $managerUsername'),
-                      );
+                      return MyListTile(
+                          title: managerUsername, subTitle: managerEmail);
                     },
                   );
                 },
@@ -205,11 +207,19 @@ class _CompanyPageState extends State<CompanyPage> {
                       final String jobTitle = jobVacancy['job_title'];
                       final String jobDescription =
                           jobVacancy['job_description'];
+                      final String category = jobVacancy['category'];
 
-                      return ListTile(
-                        title: Text('Job title: $jobTitle'),
-                        subtitle: Text('$jobDescription'),
-                      );
+                      final String JobVacancyId = jobVacancy['documentId'];
+
+                      return MyListTileWithAction(
+                          title: "${jobTitle} - ${category}",
+                          subTitle: companyName,
+                          onTap: () {
+                            Navigator.pushNamed(context, '/job_vacancy_page',
+                                arguments: {
+                                  'JobVacancyId': JobVacancyId,
+                                });
+                          });
                     },
                   );
                 },

@@ -82,22 +82,35 @@ class CompaniesPage extends StatelessWidget {
                       // Get company document ID
                       final String companyId = snapshot.data!.docs[index].id;
 
-                      // Return as a list tile
-                      return ListTile(
-                        title: Text("${name} - ${address}"),
-                        subtitle: Text(
-                            "Added by : ${addedByUsername} (${addedByRole})"),
-                        onTap: () {
-                          Navigator.pushNamed(context, '/company_page',
-                              arguments: {
-                                'companyId': companyId,
-                                'companyName': name,
-                                'companyAddress': address,
-                                'addedByUsername': addedByUsername,
-                                'addedByRole': addedByRole,
-                                'addedBy': addedBy
-                              });
-                        },
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                              title: Text("${name} - ${address}"),
+                              subtitle: Text(
+                                "Added by : ${addedByUsername} (${addedByRole})",
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                              onTap: () {
+                                Navigator.pushNamed(context, '/company_page',
+                                    arguments: {
+                                      'companyId': companyId,
+                                      'companyName': name,
+                                      'companyAddress': address,
+                                      'addedByUsername': addedByUsername,
+                                      'addedByRole': addedByRole,
+                                      'addedBy': addedBy
+                                    });
+                              }),
+                        ),
                       );
                     });
               },

@@ -14,7 +14,7 @@ class MyAddButon extends StatelessWidget {
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.secondary,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
