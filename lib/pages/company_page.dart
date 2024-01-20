@@ -105,6 +105,18 @@ class _CompanyPageState extends State<CompanyPage> {
                 height: 20,
                 thickness: 1,
               ),
+
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  'Managers',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.inversePrimary),
+                ),
+              ),
+
               MyAddButon(
                 onTap: () {
                   redirectToNewPage(context, '/add_new_manager');
@@ -159,6 +171,18 @@ class _CompanyPageState extends State<CompanyPage> {
                 height: 20,
                 thickness: 1,
               ),
+
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  'Job Vacancies',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.inversePrimary),
+                ),
+              ),
+
               MyAddButon(
                 onTap: () {
                   Navigator.pushNamed(context, '/add_new_job_vacancy_page',
