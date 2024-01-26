@@ -189,6 +189,7 @@ class _CompanyPageState extends State<CompanyPage> {
                       arguments: {
                         'companyId': companyId,
                         'companyName': companyName,
+                        'companyAddress': companyAddress,
                         'addedBy': addedBy,
                         'addedByUsername': addedByUsername,
                         'addedByRole': addedByRole,

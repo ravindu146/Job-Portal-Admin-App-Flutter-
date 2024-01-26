@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:job_portal_admin_app/components/my_button.dart';
+import 'package:job_portal_admin_app/components/my_number_textfield.dart';
 import 'package:job_portal_admin_app/components/my_textfield.dart';
 import 'package:job_portal_admin_app/helper/helper_functions.dart';
 
@@ -15,8 +16,10 @@ class _NewJobVacancyPageState extends State<NewJobVacancyPage> {
   // Text editing controllers
   TextEditingController jobTitleController = TextEditingController();
   TextEditingController jobDescriptionController = TextEditingController();
+  TextEditingController monthlySalaryController = TextEditingController();
 
   String selectedJobCategory = 'Information Technology';
+  String selectedJobModality = 'Full-Time';
 
   // List of job categories
   List<String> jobCategories = [
@@ -51,6 +54,7 @@ class _NewJobVacancyPageState extends State<NewJobVacancyPage> {
     // Extracting information
     final String companyId = args!['companyId'];
     final String companyName = args!['companyName'];
+    final String companyAddress = args!['companyAddress'];
     final String addedByUsername = args!['addedByUsername'];
     final String addedByRole = args!['addedByRole'];
     final String addedBy = args!['addedBy'];
@@ -70,11 +74,14 @@ class _NewJobVacancyPageState extends State<NewJobVacancyPage> {
         FirebaseFirestore.instance.collection('JobVacancies').add({
           'job_title': jobTitleController.text,
           'job_description': jobDescriptionController.text,
+          'modality': selectedJobModality,
+          'monthly_salary': monthlySalaryController.text,
           'category': selectedJobCategory,
           'added_by': addedBy, // added user's id
           'added_by_username': addedByUsername,
           'company_id': companyId,
           'company_name': companyName,
+          'company_address': companyAddress,
           'timestamp': Timestamp.now(),
         });
 
@@ -156,6 +163,33 @@ class _NewJobVacancyPageState extends State<NewJobVacancyPage> {
               SizedBox(
                 height: 20,
               ),
+
+              // Monthly Salary Text field
+              MyNumberTextField(
+                hintText: 'Monthly Salary (LKR)',
+                obsecureText: false,
+                controller: monthlySalaryController,
+              ),
+
+              SizedBox(height: 12),
+
+              DropdownButton<String>(
+                value: selectedJobModality,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedJobModality = newValue!;
+                  });
+                },
+                items: ['Full-Time', 'Part-Time', 'Contract', 'Freelance']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+
+              SizedBox(height: 12),
 
               MyButton(text: "Add Job Vacancy", onTap: addNewVacancyDocument),
             ],
