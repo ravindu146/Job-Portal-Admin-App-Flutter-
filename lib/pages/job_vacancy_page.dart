@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class JobVacancyPage extends StatelessWidget {
@@ -54,31 +55,72 @@ class JobVacancyPage extends StatelessWidget {
             String category = jobDetails['category'];
             String companyId = jobDetails['company_id'];
             String companyName = jobDetails['company_name'];
+            String modelity = jobDetails['modality'];
+            String location = jobDetails['company_address'];
 
             // Display your job details widgets here using jobDetails
 
             return SingleChildScrollView(
               child: Center(
-                child: Column(
-                  children: [
-                    Container(
-                        padding: EdgeInsets.all(25),
-                        margin: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                        child: Icon(Icons.work)),
+                child: Padding(
+                  padding: const EdgeInsets.all(25),
+                  child: Column(
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(25),
+                          margin: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          child: Icon(Icons.work)),
 
-                    Text(
-                      jobTitle,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Text('Job Description: $jobDescription'),
-                    Text('Company Name: $companyName'),
+                      Text(
+                        jobTitle,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text(
+                        companyName,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        jobDescription,
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            CupertinoIcons.clock,
+                            color: Colors.black,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            modelity,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Icon(
+                            Icons.location_pin,
+                            color: Colors.black,
+                          ),
+                          Text(
+                            location,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
 
-                    // Add other job details widgets as needed
-                  ],
+                      // Add other job details widgets as needed
+                    ],
+                  ),
                 ),
               ),
             );
