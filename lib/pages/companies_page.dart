@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:job_portal_admin_app/components/my_add_button.dart';
 import 'package:job_portal_admin_app/database/firestore.dart';
+import 'package:job_portal_admin_app/pages/company_page.dart';
 
 class CompaniesPage extends StatelessWidget {
   CompaniesPage({Key? key}) : super(key: key);
@@ -101,9 +102,7 @@ class CompaniesPage extends StatelessWidget {
                               ),
                               onTap: () {
                                 Navigator.pushNamed(context, '/company_page',
-                                    arguments: {
-                                      'companyId': companyId,
-                                    });
+                                    arguments: {'companyId': companyId});
                               }),
                         ),
                       );

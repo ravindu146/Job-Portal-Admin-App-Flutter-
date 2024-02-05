@@ -41,7 +41,13 @@ class MyApp extends StatelessWidget {
         '/profile_page': (context) => ProfilePage(),
         '/companies_page': (context) => CompaniesPage(),
         '/add_new_company': (context) => NewCompanyPage(),
-        '/company_page': (context) => CompanyPage(),
+        '/company_page': (context) {
+          final Map<String, dynamic>? args = ModalRoute.of(context)
+              ?.settings
+              .arguments as Map<String, dynamic>?;
+          final String companyId = args?['companyId'] ?? '';
+          return CompanyPage(companyId: companyId);
+        },
         '/add_new_manager': (context) => NewManagerPage(),
         '/add_new_job_vacancy_page': (context) => NewJobVacancyPage(),
         '/job_vacancy_page': (context) => JobVacancyPage()

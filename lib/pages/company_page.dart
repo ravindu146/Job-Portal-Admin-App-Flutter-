@@ -7,7 +7,9 @@ import 'package:job_portal_admin_app/components/my_list_tile_with_action_and_del
 import 'package:job_portal_admin_app/helper/helper_functions.dart';
 
 class CompanyPage extends StatefulWidget {
-  CompanyPage({super.key});
+  final String companyId;
+
+  CompanyPage({super.key, required this.companyId});
 
   @override
   State<CompanyPage> createState() => _CompanyPageState();
@@ -52,16 +54,12 @@ class _CompanyPageState extends State<CompanyPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic>? args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
-    // Extracting information
-    final String companyId = args!['companyId'];
-
     void redirectToNewPage(
         BuildContext context, String companyName, String routePath) {
-      Navigator.pushNamed(context, routePath,
-          arguments: {'companyName': companyName, 'companyId': companyId});
+      Navigator.pushNamed(context, routePath, arguments: {
+        'companyName': companyName,
+        'companyId': widget.companyId
+      });
     }
 
     return Scaffold(
@@ -73,7 +71,7 @@ class _CompanyPageState extends State<CompanyPage> {
         centerTitle: true,
       ),
       body: FutureBuilder<Map<String, dynamic>>(
-        future: getCompanyDetails(companyId),
+        future: getCompanyDetails(widget.companyId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -168,7 +166,7 @@ class _CompanyPageState extends State<CompanyPage> {
 
                         // Stream builder to display managers
                         StreamBuilder(
-                          stream: getManagersForCompanyStream(companyId),
+                          stream: getManagersForCompanyStream(widget.companyId),
                           builder: (context,
                               AsyncSnapshot<List<Map<String, dynamic>>>
                                   snapshot) {
@@ -234,7 +232,7 @@ class _CompanyPageState extends State<CompanyPage> {
                             Navigator.pushNamed(
                                 context, '/add_new_job_vacancy_page',
                                 arguments: {
-                                  'companyId': companyId,
+                                  'companyId': widget.companyId,
                                   'companyName': companyName,
                                   'companyAddress': companyAddress,
                                   'addedBy': addedBy,
@@ -247,7 +245,8 @@ class _CompanyPageState extends State<CompanyPage> {
 
                         // Stream builder to display managers
                         StreamBuilder(
-                          stream: getJobVacanciesForCompanyStream(companyId),
+                          stream:
+                              getJobVacanciesForCompanyStream(widget.companyId),
                           builder: (context,
                               AsyncSnapshot<List<Map<String, dynamic>>>
                                   snapshot) {
