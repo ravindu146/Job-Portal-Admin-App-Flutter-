@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:job_portal_admin_app/components/my_add_button.dart';
 import 'package:job_portal_admin_app/components/my_list_tile.dart';
 import 'package:job_portal_admin_app/components/my_list_tile_with_action.dart';
+import 'package:job_portal_admin_app/components/my_list_tile_with_action_and_delete.dart';
 import 'package:job_portal_admin_app/helper/helper_functions.dart';
 
 class CompanyPage extends StatefulWidget {
@@ -236,15 +237,17 @@ class _CompanyPageState extends State<CompanyPage> {
 
                       final String JobVacancyId = jobVacancy['documentId'];
 
-                      return MyListTileWithAction(
-                          title: "${jobTitle} - ${category}",
-                          subTitle: companyName,
-                          onTap: () {
-                            Navigator.pushNamed(context, '/job_vacancy_page',
-                                arguments: {
-                                  'JobVacancyId': JobVacancyId,
-                                });
-                          });
+                      return MyListTileWithActionWithDelete(
+                        title: "${jobTitle} - ${category}",
+                        subTitle: companyName,
+                        onTap: () {
+                          Navigator.pushNamed(context, '/job_vacancy_page',
+                              arguments: {
+                                'JobVacancyId': JobVacancyId,
+                              });
+                        },
+                        onDelete: () {},
+                      );
                     },
                   );
                 },
