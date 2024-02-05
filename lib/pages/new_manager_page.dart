@@ -71,58 +71,60 @@ class NewManagerPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(25),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(25),
-              child: Icon(
-                Icons.person,
-                size: 60,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("New Manager for "),
-                Text(
-                  "${companyName}",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.all(25),
+                child: Icon(
+                  Icons.person,
+                  size: 60,
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            MyTextField(
-                hintText: 'Username',
-                obsecureText: false,
-                controller: usernameController),
-            SizedBox(
-              height: 20,
-            ),
-            MyTextField(
-                hintText: 'Email',
-                obsecureText: false,
-                controller: emailController),
-            SizedBox(
-              height: 20,
-            ),
-            MyTextField(
-                hintText: 'Password',
-                obsecureText: true,
-                controller: passwordController),
-            SizedBox(
-              height: 20,
-            ),
-            MyTextField(
-                hintText: 'Confirm Password',
-                obsecureText: true,
-                controller: confirmPasswordController),
-            SizedBox(
-              height: 20,
-            ),
-            MyButton(text: 'Register Manager', onTap: addManager),
-          ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("New Manager for "),
+                  Text(
+                    "${companyName}",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              MyTextField(
+                  hintText: 'Username',
+                  obsecureText: false,
+                  controller: usernameController),
+              SizedBox(
+                height: 20,
+              ),
+              MyTextField(
+                  hintText: 'Email',
+                  obsecureText: false,
+                  controller: emailController),
+              SizedBox(
+                height: 20,
+              ),
+              MyTextField(
+                  hintText: 'Password',
+                  obsecureText: true,
+                  controller: passwordController),
+              SizedBox(
+                height: 20,
+              ),
+              MyTextField(
+                  hintText: 'Confirm Password',
+                  obsecureText: true,
+                  controller: confirmPasswordController),
+              SizedBox(
+                height: 20,
+              ),
+              MyButton(text: 'Register Manager', onTap: addManager),
+            ],
+          ),
         ),
       ),
     );
