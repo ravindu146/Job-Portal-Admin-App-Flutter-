@@ -246,7 +246,25 @@ class _CompanyPageState extends State<CompanyPage> {
                                 'JobVacancyId': JobVacancyId,
                               });
                         },
-                        onDelete: () {},
+                        onDelete: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                                Center(child: CircularProgressIndicator()),
+                          );
+
+                          try {
+                            FirebaseFirestore.instance
+                                .collection('JobVacancies')
+                                .doc(JobVacancyId)
+                                .delete();
+                            Navigator.pop(context);
+                          } on FirebaseException catch (e) {
+                            Navigator.pop(context);
+                            displayMessageToUser(
+                                "Error deleting document: $e", context);
+                          }
+                        },
                       );
                     },
                   );

@@ -104,95 +104,97 @@ class _NewJobVacancyPageState extends State<NewJobVacancyPage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(25),
-          child: Column(
-            children: [
-              //     // Logo
-              Icon(
-                Icons.work,
-                size: 50,
-              ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                //     // Logo
+                Icon(
+                  Icons.work,
+                  size: 50,
+                ),
 
-              SizedBox(
-                height: 20,
-              ),
+                SizedBox(
+                  height: 20,
+                ),
 
-              // ADD SELECT CATRGORY HERE
+                // ADD SELECT CATRGORY HERE
 
-              // Job Category Dropdown
-              Text(
-                'Select Job Category:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+                // Job Category Dropdown
+                Text(
+                  'Select Job Category:',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
 
-              SizedBox(height: 12),
+                SizedBox(height: 12),
 
-              DropdownButton<String>(
-                value: selectedJobCategory,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedJobCategory = newValue!;
-                  });
-                },
-                items:
-                    jobCategories.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
+                DropdownButton<String>(
+                  value: selectedJobCategory,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedJobCategory = newValue!;
+                    });
+                  },
+                  items: jobCategories
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
 
-              SizedBox(height: 12),
+                SizedBox(height: 12),
 
-              //     // Company Name Text field
-              MyTextField(
-                  hintText: 'Job Title',
+                //     // Company Name Text field
+                MyTextField(
+                    hintText: 'Job Title',
+                    obsecureText: false,
+                    controller: jobTitleController),
+
+                SizedBox(
+                  height: 20,
+                ),
+
+                //     // Address Text field
+                MyTextField(
+                    hintText: 'Job Description',
+                    obsecureText: false,
+                    controller: jobDescriptionController),
+
+                SizedBox(
+                  height: 20,
+                ),
+
+                // Monthly Salary Text field
+                MyNumberTextField(
+                  hintText: 'Monthly Salary (LKR)',
                   obsecureText: false,
-                  controller: jobTitleController),
+                  controller: monthlySalaryController,
+                ),
 
-              SizedBox(
-                height: 20,
-              ),
+                SizedBox(height: 12),
 
-              //     // Address Text field
-              MyTextField(
-                  hintText: 'Job Description',
-                  obsecureText: false,
-                  controller: jobDescriptionController),
+                DropdownButton<String>(
+                  value: selectedJobModality,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedJobModality = newValue!;
+                    });
+                  },
+                  items: ['Full-Time', 'Part-Time', 'Contract', 'Freelance']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
 
-              SizedBox(
-                height: 20,
-              ),
+                SizedBox(height: 12),
 
-              // Monthly Salary Text field
-              MyNumberTextField(
-                hintText: 'Monthly Salary (LKR)',
-                obsecureText: false,
-                controller: monthlySalaryController,
-              ),
-
-              SizedBox(height: 12),
-
-              DropdownButton<String>(
-                value: selectedJobModality,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedJobModality = newValue!;
-                  });
-                },
-                items: ['Full-Time', 'Part-Time', 'Contract', 'Freelance']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-
-              SizedBox(height: 12),
-
-              MyButton(text: "Add Job Vacancy", onTap: addNewVacancyDocument),
-            ],
+                MyButton(text: "Add Job Vacancy", onTap: addNewVacancyDocument),
+              ],
+            ),
           ),
         ),
       ),
