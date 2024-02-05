@@ -103,11 +103,6 @@ class CompaniesPage extends StatelessWidget {
                                 Navigator.pushNamed(context, '/company_page',
                                     arguments: {
                                       'companyId': companyId,
-                                      'companyName': name,
-                                      'companyAddress': address,
-                                      'addedByUsername': addedByUsername,
-                                      'addedByRole': addedByRole,
-                                      'addedBy': addedBy
                                     });
                               }),
                         ),

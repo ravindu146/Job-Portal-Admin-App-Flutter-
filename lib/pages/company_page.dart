@@ -41,6 +41,15 @@ class _CompanyPageState extends State<CompanyPage> {
             }).toList());
   }
 
+  Future<Map<String, dynamic>> getCompanyDetails(String companyId) async {
+    DocumentSnapshot companySnapshot = await FirebaseFirestore.instance
+        .collection('companies')
+        .doc(companyId)
+        .get();
+
+    return companySnapshot.data() as Map<String, dynamic>;
+  }
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic>? args =
@@ -48,13 +57,9 @@ class _CompanyPageState extends State<CompanyPage> {
 
     // Extracting information
     final String companyId = args!['companyId'];
-    final String companyName = args!['companyName'];
-    final String companyAddress = args!['companyAddress'];
-    final String addedByUsername = args!['addedByUsername'];
-    final String addedByRole = args!['addedByRole'];
-    final String addedBy = args!['addedBy'];
 
-    void redirectToNewPage(BuildContext context, String routePath) {
+    void redirectToNewPage(
+        BuildContext context, String companyName, String routePath) {
       Navigator.pushNamed(context, routePath,
           arguments: {'companyName': companyName, 'companyId': companyId});
     }
@@ -67,212 +72,263 @@ class _CompanyPageState extends State<CompanyPage> {
         ),
         centerTitle: true,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            verticalDirection: VerticalDirection.down,
-            children: [
-              Container(
-                margin: EdgeInsets.all(20),
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Icon(
-                  Icons.business,
-                  size: 50,
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: getCompanyDetails(companyId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error loading company details: ${snapshot.error}'),
+            );
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return Center(
+              child: Text('Company details not found'),
+            );
+          } else {
+            // Access the company details from snapshot.data and display them
+            Map<String, dynamic> companyDetails = snapshot.data!;
+
+            final String companyName = companyDetails['name'];
+            final String companyAddress = companyDetails['address'];
+            final String addedByUsername = companyDetails['added_by_username'];
+            final String addedByRole = companyDetails['added_by_role'];
+            final String addedBy = companyDetails['added_by'];
+
+            // Display your company details widgets here using companyDetails
+
+            return SingleChildScrollView(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(25),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      verticalDirection: VerticalDirection.down,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.all(20),
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.secondary,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Icon(
+                            Icons.business,
+                            size: 50,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          '$companyName',
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Address: $companyAddress'),
+                        Text("Added By: ${addedByUsername} (${addedByRole})"),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Divider(
+                          color: Theme.of(context).colorScheme.secondary,
+                          height: 20,
+                          thickness: 1,
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Text(
+                            'Managers',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary),
+                          ),
+                        ),
+
+                        MyAddButon(
+                          onTap: () {
+                            redirectToNewPage(
+                                context, companyName, '/add_new_manager');
+                          },
+                          text: 'Add New Manager',
+                        ),
+
+                        // SizedBox(height: 10),
+
+                        // Stream builder to display managers
+                        StreamBuilder(
+                          stream: getManagersForCompanyStream(companyId),
+                          builder: (context,
+                              AsyncSnapshot<List<Map<String, dynamic>>>
+                                  snapshot) {
+                            // Show loading circle
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+
+                            // Error
+                            if (snapshot.hasError) {
+                              return Text(
+                                  'Error loading Managers for the company');
+                            }
+
+                            //If has no data
+                            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return Text('No managers Added');
+                            }
+
+                            // List of Managers
+                            final managers = snapshot.data!;
+
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: managers.length,
+                              itemBuilder: (context, index) {
+                                final manager = managers[index];
+                                final String managerUsername =
+                                    manager['username'];
+                                final String managerEmail = manager['email'];
+
+                                return MyListTile(
+                                    title: managerUsername,
+                                    subTitle: managerEmail);
+                              },
+                            );
+                          },
+                        ),
+                        Divider(
+                          color: Theme.of(context).colorScheme.secondary,
+                          height: 20,
+                          thickness: 1,
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Text(
+                            'Job Vacancies',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary),
+                          ),
+                        ),
+
+                        MyAddButon(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, '/add_new_job_vacancy_page',
+                                arguments: {
+                                  'companyId': companyId,
+                                  'companyName': companyName,
+                                  'companyAddress': companyAddress,
+                                  'addedBy': addedBy,
+                                  'addedByUsername': addedByUsername,
+                                  'addedByRole': addedByRole,
+                                });
+                          },
+                          text: 'Add New Job Vacancy',
+                        ),
+
+                        // Stream builder to display managers
+                        StreamBuilder(
+                          stream: getJobVacanciesForCompanyStream(companyId),
+                          builder: (context,
+                              AsyncSnapshot<List<Map<String, dynamic>>>
+                                  snapshot) {
+                            // Show loading circle
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+
+                            // Error
+                            if (snapshot.hasError) {
+                              return Text(
+                                  'Error loading Job Vacancies for the company: ${snapshot.error}');
+                            }
+
+                            //If has no data
+                            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return Text('No Job vacancies Added');
+                            }
+
+                            // List of Managers
+                            final jobVacancies = snapshot.data!;
+
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: jobVacancies.length,
+                              itemBuilder: (context, index) {
+                                final jobVacancy = jobVacancies[index];
+                                final String jobTitle = jobVacancy['job_title'];
+                                final String jobDescription =
+                                    jobVacancy['job_description'];
+                                final String category = jobVacancy['category'];
+
+                                final String JobVacancyId =
+                                    jobVacancy['documentId'];
+
+                                return MyListTileWithActionWithDelete(
+                                  title: "${jobTitle} - ${category}",
+                                  subTitle: companyName,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, '/job_vacancy_page',
+                                        arguments: {
+                                          'JobVacancyId': JobVacancyId,
+                                        });
+                                  },
+                                  onDelete: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => Center(
+                                          child: CircularProgressIndicator()),
+                                    );
+
+                                    try {
+                                      FirebaseFirestore.instance
+                                          .collection('JobVacancies')
+                                          .doc(JobVacancyId)
+                                          .delete();
+                                      Navigator.pop(context);
+                                    } on FirebaseException catch (e) {
+                                      Navigator.pop(context);
+                                      displayMessageToUser(
+                                          "Error deleting document: $e",
+                                          context);
+                                    }
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                '$companyName',
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text('Address: $companyAddress'),
-              Text("Added By: ${addedByUsername} (${addedByRole})"),
-              SizedBox(
-                height: 15,
-              ),
-              Divider(
-                color: Theme.of(context).colorScheme.secondary,
-                height: 20,
-                thickness: 1,
-              ),
-
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Text(
-                  'Managers',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.inversePrimary),
-                ),
-              ),
-
-              MyAddButon(
-                onTap: () {
-                  redirectToNewPage(context, '/add_new_manager');
-                },
-                text: 'Add New Manager',
-              ),
-
-              // SizedBox(height: 10),
-
-              // Stream builder to display managers
-              StreamBuilder(
-                stream: getManagersForCompanyStream(companyId),
-                builder: (context,
-                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                  // Show loading circle
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  // Error
-                  if (snapshot.hasError) {
-                    return Text('Error loading Managers for the company');
-                  }
-
-                  //If has no data
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Text('No managers Added');
-                  }
-
-                  // List of Managers
-                  final managers = snapshot.data!;
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: managers.length,
-                    itemBuilder: (context, index) {
-                      final manager = managers[index];
-                      final String managerUsername = manager['username'];
-                      final String managerEmail = manager['email'];
-
-                      return MyListTile(
-                          title: managerUsername, subTitle: managerEmail);
-                    },
-                  );
-                },
-              ),
-
-              Divider(
-                color: Theme.of(context).colorScheme.secondary,
-                height: 20,
-                thickness: 1,
-              ),
-
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Text(
-                  'Job Vacancies',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.inversePrimary),
-                ),
-              ),
-
-              MyAddButon(
-                onTap: () {
-                  Navigator.pushNamed(context, '/add_new_job_vacancy_page',
-                      arguments: {
-                        'companyId': companyId,
-                        'companyName': companyName,
-                        'companyAddress': companyAddress,
-                        'addedBy': addedBy,
-                        'addedByUsername': addedByUsername,
-                        'addedByRole': addedByRole,
-                      });
-                },
-                text: 'Add New Job Vacancy',
-              ),
-
-              // Stream builder to display managers
-              StreamBuilder(
-                stream: getJobVacanciesForCompanyStream(companyId),
-                builder: (context,
-                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                  // Show loading circle
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  // Error
-                  if (snapshot.hasError) {
-                    return Text(
-                        'Error loading Job Vacancies for the company: ${snapshot.error}');
-                  }
-
-                  //If has no data
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Text('No Job vacancies Added');
-                  }
-
-                  // List of Managers
-                  final jobVacancies = snapshot.data!;
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: jobVacancies.length,
-                    itemBuilder: (context, index) {
-                      final jobVacancy = jobVacancies[index];
-                      final String jobTitle = jobVacancy['job_title'];
-                      final String jobDescription =
-                          jobVacancy['job_description'];
-                      final String category = jobVacancy['category'];
-
-                      final String JobVacancyId = jobVacancy['documentId'];
-
-                      return MyListTileWithActionWithDelete(
-                        title: "${jobTitle} - ${category}",
-                        subTitle: companyName,
-                        onTap: () {
-                          Navigator.pushNamed(context, '/job_vacancy_page',
-                              arguments: {
-                                'JobVacancyId': JobVacancyId,
-                              });
-                        },
-                        onDelete: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) =>
-                                Center(child: CircularProgressIndicator()),
-                          );
-
-                          try {
-                            FirebaseFirestore.instance
-                                .collection('JobVacancies')
-                                .doc(JobVacancyId)
-                                .delete();
-                            Navigator.pop(context);
-                          } on FirebaseException catch (e) {
-                            Navigator.pop(context);
-                            displayMessageToUser(
-                                "Error deleting document: $e", context);
-                          }
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
+            );
+          }
+        },
       ),
     );
   }
