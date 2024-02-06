@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:job_portal_admin_app/components/my_add_button.dart';
 import 'package:job_portal_admin_app/components/my_list_tile.dart';
@@ -62,6 +63,10 @@ class _CompanyPageState extends State<CompanyPage> {
       });
     }
 
+    void logout() {
+      FirebaseAuth.instance.signOut();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -69,6 +74,7 @@ class _CompanyPageState extends State<CompanyPage> {
           style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
         ),
         centerTitle: true,
+        actions: [GestureDetector(onTap: logout, child: Icon(Icons.logout))],
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: getCompanyDetails(widget.companyId),
