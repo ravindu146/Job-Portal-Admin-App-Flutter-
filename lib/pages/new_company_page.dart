@@ -20,6 +20,8 @@ class _NewCompanyPageState extends State<NewCompanyPage> {
   final TextEditingController companyAddressController =
       TextEditingController();
 
+  final TextEditingController emailController = TextEditingController();
+
   Future<void> AddNewCompanyDocument() async {
     // Loading circle
     showDialog(
@@ -50,6 +52,7 @@ class _NewCompanyPageState extends State<NewCompanyPage> {
           await FirebaseFirestore.instance.collection('companies').add({
             'name': companyNameController.text,
             'address': companyAddressController.text,
+            'email': emailController.text,
             'added_by': user!.uid,
             'added_by_username': username,
             'added_by_role': role
@@ -97,6 +100,15 @@ class _NewCompanyPageState extends State<NewCompanyPage> {
                   hintText: 'Company Name',
                   obsecureText: false,
                   controller: companyNameController),
+
+              SizedBox(
+                height: 20,
+              ),
+
+              MyTextField(
+                  hintText: 'Email Address',
+                  obsecureText: false,
+                  controller: emailController),
 
               SizedBox(
                 height: 20,

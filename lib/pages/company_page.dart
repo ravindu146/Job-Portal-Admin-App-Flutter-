@@ -17,6 +17,27 @@ class CompanyPage extends StatefulWidget {
 }
 
 class _CompanyPageState extends State<CompanyPage> {
+  late String _userRole;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserRole();
+  }
+
+  Future<void> _getUserRole() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('topLevelUsers')
+          .doc(user.uid)
+          .get();
+      setState(() {
+        _userRole = userSnapshot['role'];
+      });
+    }
+  }
+
   Stream<List<Map<String, dynamic>>> getManagersForCompanyStream(
       String companyId) {
     return FirebaseFirestore.instance
@@ -100,6 +121,7 @@ class _CompanyPageState extends State<CompanyPage> {
             final String addedByUsername = companyDetails['added_by_username'];
             final String addedByRole = companyDetails['added_by_role'];
             final String addedBy = companyDetails['added_by'];
+            final String email = companyDetails['email'];
 
             // Display your company details widgets here using companyDetails
 
@@ -138,81 +160,96 @@ class _CompanyPageState extends State<CompanyPage> {
                         ),
                         Text('Address: $companyAddress'),
                         Text("Added By: ${addedByUsername} (${addedByRole})"),
+                        Text("Email: ${email}"),
+
                         SizedBox(
                           height: 15,
                         ),
-                        Divider(
-                          color: Theme.of(context).colorScheme.secondary,
-                          height: 20,
-                          thickness: 1,
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text(
-                            'Managers',
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .inversePrimary),
+                        Visibility(
+                          visible: _userRole != 'manager',
+                          child: Divider(
+                            color: Theme.of(context).colorScheme.secondary,
+                            height: 20,
+                            thickness: 1,
                           ),
                         ),
 
-                        MyAddButon(
-                          onTap: () {
-                            redirectToNewPage(
-                                context, companyName, '/add_new_manager');
-                          },
-                          text: 'Add New Manager',
+                        Visibility(
+                          visible: _userRole != 'manager',
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              'Managers',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .inversePrimary),
+                            ),
+                          ),
+                        ),
+
+                        Visibility(
+                          visible: _userRole != 'manager',
+                          child: MyAddButon(
+                            onTap: () {
+                              redirectToNewPage(
+                                  context, companyName, '/add_new_manager');
+                            },
+                            text: 'Add New Manager',
+                          ),
                         ),
 
                         // SizedBox(height: 10),
 
                         // Stream builder to display managers
-                        StreamBuilder(
-                          stream: getManagersForCompanyStream(widget.companyId),
-                          builder: (context,
-                              AsyncSnapshot<List<Map<String, dynamic>>>
-                                  snapshot) {
-                            // Show loading circle
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(
-                                child: CircularProgressIndicator(),
+                        Visibility(
+                          visible: _userRole != 'manager',
+                          child: StreamBuilder(
+                            stream:
+                                getManagersForCompanyStream(widget.companyId),
+                            builder: (context,
+                                AsyncSnapshot<List<Map<String, dynamic>>>
+                                    snapshot) {
+                              // Show loading circle
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+
+                              // Error
+                              if (snapshot.hasError) {
+                                return Text(
+                                    'Error loading Managers for the company');
+                              }
+
+                              //If has no data
+                              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                return Text('No managers Added');
+                              }
+
+                              // List of Managers
+                              final managers = snapshot.data!;
+
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: managers.length,
+                                itemBuilder: (context, index) {
+                                  final manager = managers[index];
+                                  final String managerUsername =
+                                      manager['username'];
+                                  final String managerEmail = manager['email'];
+
+                                  return MyListTile(
+                                      title: managerUsername,
+                                      subTitle: managerEmail);
+                                },
                               );
-                            }
-
-                            // Error
-                            if (snapshot.hasError) {
-                              return Text(
-                                  'Error loading Managers for the company');
-                            }
-
-                            //If has no data
-                            if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                              return Text('No managers Added');
-                            }
-
-                            // List of Managers
-                            final managers = snapshot.data!;
-
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: managers.length,
-                              itemBuilder: (context, index) {
-                                final manager = managers[index];
-                                final String managerUsername =
-                                    manager['username'];
-                                final String managerEmail = manager['email'];
-
-                                return MyListTile(
-                                    title: managerUsername,
-                                    subTitle: managerEmail);
-                              },
-                            );
-                          },
+                            },
+                          ),
                         ),
                         Divider(
                           color: Theme.of(context).colorScheme.secondary,
