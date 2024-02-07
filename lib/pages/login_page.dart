@@ -47,20 +47,10 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // logo
-              Icon(
-                Icons.person,
-                size: 80,
-                color: Theme.of(context).colorScheme.inversePrimary,
-              ),
+              Image(image: AssetImage("assets/images/JobPortalIcon.PNG")),
               SizedBox(
                 height: 20,
               ),
-
-              // app Name
-              Text('A D M I N   J O B   P O R T A L',
-                  style: TextStyle(fontSize: 20)),
-
               SizedBox(
                 height: 25,
               ),
